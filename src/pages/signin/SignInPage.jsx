@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import {
   Card,
   CardContent,
@@ -6,48 +5,30 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Eye, EyeOff } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios'
 import { useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
+import SignInForm from './SignInForm'
 // import { useDispatch } from 'react-redux'
 
 const signinSchema = z.object({
   email: z
     .string()
-    .email({ message: 'Email must be a valid email address' })
-    .min(1, { message: 'Emial is required' })
-    .min(3, { message: 'Emial must be at least 3 characters' })
+    .min(1, { message: 'Email is required' })
+    .min(3, { message: 'Email must be at least 3 characters' })
     .max(50, {
-      message: 'Emial must be less than 50 characters',
-    }),
-  password: z
-    .string()
-    .min(1, { message: 'Password is required' })
-    .min(8, { message: 'Password must be at least 8 characters' }),
+      message: 'Email must be less than 50 characters',
+    })
+    .email({ message: 'Email must be a valid email address' }),
+  password: z.string().min(1, { message: 'Password is required' }),
 })
 
 export default function SignInPage() {
   // const dispatch = useDispatch()
-
-  const [passwordType, setPasswordType] = useState('password')
-
-  function togglePasswordVisibility() {
-    setPasswordType(passwordType === 'password' ? 'text' : 'password')
-  }
-
   const form = useForm({
     resolver: zodResolver(signinSchema),
     defaultValues: {
@@ -55,9 +36,42 @@ export default function SignInPage() {
       password: '',
     },
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+  const token = localStorage.getItem('token')
 
-  const onSignin = ({ email, password }) => {
-    console.log(email, password)
+  if (token) {
+    return <Navigate to='/' replace />
+  }
+
+  const onSignin = async ({ email, password }) => {
+    setIsLoading(true)
+    try {
+      const res = await axios.post(
+        'http://localhost:9000/api/v1/cms/auth/signin',
+        {
+          email,
+          password,
+        },
+      )
+      console.log(res.data)
+      Swal.fire({
+        title: 'Success',
+        text: 'Sign In Successfully',
+        icon: 'success',
+      })
+      localStorage.setItem('token', res.data.data.token)
+      navigate('/')
+    } catch (error) {
+      console.log(error.response.data.msg ?? 'Internal Server Error')
+      Swal.fire({
+        title: 'Failed',
+        text: error.response.data.msg ?? 'Internal Server Error',
+        icon: 'error',
+      })
+    } finally {
+      setIsLoading(false)
+    }
     form.reset()
   }
 
@@ -71,78 +85,7 @@ export default function SignInPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSignin)}
-              className='space-y-8 mt-5'
-            >
-              <FormField
-                control={form.control}
-                name='username'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        id='username'
-                        type='text'
-                        placeholder='Username'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      This is your public display name.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='password'
-                render={({ field }) => (
-                  <FormItem>
-                    <div className='flex items-center justify-between'>
-                      <FormLabel>Password</FormLabel>
-                      <Link
-                        to='#'
-                        className='ml-auto inline-block text-sm underline'
-                      >
-                        Forgot your password?
-                      </Link>
-                    </div>
-                    <FormControl>
-                      <div className='relative'>
-                        <Input
-                          id='password'
-                          type={passwordType}
-                          placeholder='Password'
-                          {...field}
-                        />
-                        <Button
-                          type='button'
-                          onClick={togglePasswordVisibility}
-                          className='absolute right-2 top-1/2 transform -translate-y-1/2'
-                        >
-                          {passwordType === 'password' ? <Eye /> : <EyeOff />}
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type='submit' className='w-full'>
-                Login
-              </Button>
-            </form>
-          </Form>
-          <div className='mt-4 text-center text-sm'>
-            Don&apos;t have an account?{' '}
-            <Link to='/register' className='underline'>
-              Sign up
-            </Link>
-          </div>
+          <SignInForm form={form} onSignin={onSignin} isLoading={isLoading} />
         </CardContent>
       </Card>
     </div>
