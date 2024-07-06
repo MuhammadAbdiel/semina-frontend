@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
   CalendarCheck,
   CircleUser,
@@ -20,9 +20,41 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from './ui/button'
+import NavLinkComponent from './NavLinkComponent'
+import {
+  accessCategories,
+  accessEvents,
+  accessHome,
+  accessOrders,
+  accessParticipant,
+  accessTalents,
+} from '@/access'
+import Swal from 'sweetalert2'
 
-export default function NavbarComponent() {
-  const location = useLocation()
+export default function NavbarComponent({ role }) {
+  const handleLogout = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, log out!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Success!',
+          text: 'Logged Out Successful',
+          icon: 'success',
+          willClose: () => {
+            localStorage.removeItem('auth')
+            window.location.href = '/signin'
+          },
+        })
+      }
+    })
+  }
 
   return (
     <header className='flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6'>
@@ -36,54 +68,60 @@ export default function NavbarComponent() {
         <SheetContent side='left' className='flex flex-col'>
           <nav className='grid gap-2 text-lg font-medium'>
             <Link
-              to='/'
+              to='/dashboard'
               className='flex items-center gap-2 text-lg font-semibold'
             >
               <Speech className='h-6 w-6' />
               <span className='sr-only'>Semina</span>
             </Link>
-            <Link
-              to='/'
-              className={`${location.pathname === '/' && 'mx-[-0.65rem]'} flex items-center gap-3 rounded-lg ${location.pathname === '/' && 'bg-muted'} px-3 py-2 ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'} transition-all hover:text-primary`}
+            <NavLinkComponent
+              navigate='/dashboard'
+              role={role}
+              roles={accessHome.read}
             >
               <Home className='h-5 w-5' />
               Dashboard
-            </Link>
-            <Link
-              to='/categories'
-              className={`${location.pathname === '/categories' && 'mx-[-0.65rem]'} flex items-center gap-3 rounded-lg ${location.pathname === '/categories' && 'bg-muted'} px-3 py-2 ${location.pathname === '/categories' ? 'text-primary' : 'text-muted-foreground'} transition-all hover:text-primary`}
+            </NavLinkComponent>
+            <NavLinkComponent
+              navigate='/categories'
+              role={role}
+              roles={accessCategories.read}
             >
               <List className='h-5 w-5' />
               Categories
-            </Link>
-            <Link
-              to='/talents'
-              className={`${location.pathname === '/talents' && 'mx-[-0.65rem]'} flex items-center gap-3 rounded-lg ${location.pathname === '/talents' && 'bg-muted'} px-3 py-2 ${location.pathname === '/talents' ? 'text-primary' : 'text-muted-foreground'} transition-all hover:text-primary`}
+            </NavLinkComponent>
+            <NavLinkComponent
+              navigate='/talents'
+              role={role}
+              roles={accessTalents.read}
             >
               <UsersRound className='h-5 w-5' />
               Talents
-            </Link>
-            <Link
-              to='/events'
-              className={`${location.pathname === '/events' && 'mx-[-0.65rem]'} flex items-center gap-3 rounded-lg ${location.pathname === '/events' && 'bg-muted'} px-3 py-2 ${location.pathname === '/events' ? 'text-primary' : 'text-muted-foreground'} transition-all hover:text-primary`}
+            </NavLinkComponent>
+            <NavLinkComponent
+              navigate='/events'
+              role={role}
+              roles={accessEvents.read}
             >
               <CalendarCheck className='h-5 w-5' />
               Events
-            </Link>
-            <Link
-              to='/participants'
-              className={`${location.pathname === '/participants' && 'mx-[-0.65rem]'} flex items-center gap-3 rounded-lg ${location.pathname === '/participants' && 'bg-muted'} px-3 py-2 ${location.pathname === '/participants' ? 'text-primary' : 'text-muted-foreground'} transition-all hover:text-primary`}
+            </NavLinkComponent>
+            <NavLinkComponent
+              navigate='/participants'
+              role={role}
+              roles={accessParticipant.read}
             >
               <Users className='h-5 w-5' />
               Participants
-            </Link>
-            <Link
-              to='/transactions'
-              className={`${location.pathname === '/transactions' && 'mx-[-0.65rem]'} flex items-center gap-3 rounded-lg ${location.pathname === '/transactions' && 'bg-muted'} px-3 py-2 ${location.pathname === '/transactions' ? 'text-primary' : 'text-muted-foreground'} transition-all hover:text-primary`}
+            </NavLinkComponent>
+            <NavLinkComponent
+              navigate='/transactions'
+              role={role}
+              roles={accessOrders.read}
             >
               <CreditCard className='h-5 w-5' />
               Transactions
-            </Link>
+            </NavLinkComponent>
           </nav>
         </SheetContent>
       </Sheet>
@@ -101,7 +139,7 @@ export default function NavbarComponent() {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

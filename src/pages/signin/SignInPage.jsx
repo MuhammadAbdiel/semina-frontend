@@ -8,12 +8,13 @@ import {
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import axios from 'axios'
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import SignInForm from './SignInForm'
-// import { useDispatch } from 'react-redux'
+import { postData } from '@/utils/fetch'
+import { useDispatch } from 'react-redux'
+import { userLogin } from '@/redux/auth/action'
 
 const signinSchema = z.object({
   email: z
@@ -28,7 +29,7 @@ const signinSchema = z.object({
 })
 
 export default function SignInPage() {
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const form = useForm({
     resolver: zodResolver(signinSchema),
     defaultValues: {
@@ -38,40 +39,31 @@ export default function SignInPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
-  const token = localStorage.getItem('token')
-
-  if (token) {
-    return <Navigate to='/' replace />
-  }
 
   const onSignin = async ({ email, password }) => {
     setIsLoading(true)
-    try {
-      const res = await axios.post(
-        'http://localhost:9000/api/v1/cms/auth/signin',
-        {
-          email,
-          password,
-        },
-      )
-      console.log(res.data)
+
+    const res = await postData('/cms/auth/signin', {
+      email,
+      password,
+    })
+
+    if (res?.data?.data) {
+      dispatch(userLogin(res.data.data.token, res.data.data.role))
       Swal.fire({
         title: 'Success',
         text: 'Sign In Successfully',
         icon: 'success',
       })
-      localStorage.setItem('token', res.data.data.token)
-      navigate('/')
-    } catch (error) {
-      console.log(error.response.data.msg ?? 'Internal Server Error')
+      navigate('/dashboard')
+    } else {
       Swal.fire({
         title: 'Failed',
-        text: error.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
-    } finally {
-      setIsLoading(false)
     }
+    setIsLoading(false)
     form.reset()
   }
 

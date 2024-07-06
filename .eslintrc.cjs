@@ -20,5 +20,6 @@ module.exports = {
     'react/prop-types': 'off',
     'no-undef': 'off',
     'react/no-unknown-property': 'off',
+    'react/display-name': 'off',
   },
 }

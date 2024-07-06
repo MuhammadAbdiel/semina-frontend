@@ -1,15 +1,13 @@
 import DashboardLayout from '@/layouts/DashboardLayout'
 import {
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react'
-import { Navigate } from 'react-router-dom'
-import { data, columns } from './DataTable'
+import { useEffect, useState } from 'react'
+import { columns } from './DataTable'
 import { Input } from '@/components/ui/input'
 import {
   DropdownMenu,
@@ -19,23 +17,40 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import CreatePage from './CreatePage'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchCategories } from '@/redux/categories/action'
+import STableComponent from '@/components/STableComponent'
+import { accessCategories } from '@/access'
 
 export default function IndexPage() {
+  const dispatch = useDispatch()
   const [sorting, setSorting] = useState([])
   const [columnFilters, setColumnFilters] = useState([])
   const [columnVisibility, setColumnVisibility] = useState({})
   const [rowSelection, setRowSelection] = useState({})
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
+  const categories = useSelector((state) => state.categories)
+  const data = categories.data
 
-  const token = localStorage.getItem('token')
+  const [access, setAccess] = useState({
+    create: false,
+    delete: false,
+    edit: false,
+  })
+
+  const checkAccess = () => {
+    let { role } = localStorage.getItem('auth')
+      ? JSON.parse(localStorage.getItem('auth'))
+      : {}
+    const access = { create: false, delete: false, edit: false }
+    Object.keys(accessCategories).forEach(function (key) {
+      if (accessCategories[key].indexOf(role) >= 0) {
+        access[key] = true
+      }
+    })
+    setAccess(access)
+  }
 
   const table = useReactTable({
     data,
@@ -56,15 +71,23 @@ export default function IndexPage() {
       pagination,
     },
     onPaginationChange: setPagination,
+    defaultColumns: {
+      minSize: 10,
+      maxSize: 100,
+    },
   })
 
   const handlePageSizeChange = (pageSize) => {
     setPagination((prev) => ({ ...prev, pageSize }))
   }
 
-  if (!token) {
-    return <Navigate to='/signin' replace />
-  }
+  useEffect(() => {
+    checkAccess()
+  }, [])
+
+  useEffect(() => {
+    dispatch(fetchCategories())
+  }, [dispatch])
 
   return (
     <DashboardLayout>
@@ -74,13 +97,14 @@ export default function IndexPage() {
       <div className='flex justify-center rounded-lg border border-dashed shadow-sm p-3'>
         <div className='w-full'>
           <div className='flex items-center py-4'>
+            {access.create && <CreatePage />}
             <Input
-              placeholder='Filter emails...'
-              value={table.getColumn('email')?.getFilterValue() ?? ''}
+              placeholder='Filter name'
+              value={table.getColumn('name')?.getFilterValue() ?? ''}
               onChange={(event) =>
-                table.getColumn('email')?.setFilterValue(event.target.value)
+                table.getColumn('name')?.setFilterValue(event.target.value)
               }
-              className='max-w-sm'
+              className='max-w-sm ml-auto'
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -109,102 +133,14 @@ export default function IndexPage() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className='rounded-md border'>
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                        </TableHead>
-                      )
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && 'selected'}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className='h-24 text-center'
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-          <div className='flex items-center justify-between space-x-2 py-4'>
-            <div className='flex-1 text-sm text-muted-foreground'>
-              {table.getFilteredSelectedRowModel().rows.length} of{' '}
-              {table.getFilteredRowModel().rows.length} row(s) selected.
-            </div>
-            <div className='flex items-center space-x-2'>
-              <span>Rows per page</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant='outline' className='ml-2'>
-                    {pagination.pageSize}{' '}
-                    <ChevronDown className='ml-2 h-4 w-4' />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='end'>
-                  {[5, 10, 20, 30, 40, 50].map((pageSize) => (
-                    <DropdownMenuCheckboxItem
-                      key={pageSize}
-                      checked={pagination.pageSize === pageSize}
-                      onSelect={() => handlePageSizeChange(pageSize)}
-                    >
-                      {pageSize}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div className='space-x-2'>
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
+          <STableComponent
+            access={access}
+            status={categories.status}
+            table={table}
+            columns={columns}
+            handlePageSizeChange={handlePageSizeChange}
+            pagination={pagination}
+          />
         </div>
       </div>
     </DashboardLayout>

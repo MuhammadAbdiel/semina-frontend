@@ -1,5 +1,12 @@
+import { forwardRef } from 'react'
 import { Button } from './ui/button'
 
-export default function SButtonComponent({ children, ...props }) {
-  return <Button {...props}>{children}</Button>
-}
+const SButtonComponent = forwardRef(({ children, ...props }, ref) => {
+  return (
+    <Button ref={ref} {...props}>
+      {children}
+    </Button>
+  )
+})
+
+export default SButtonComponent

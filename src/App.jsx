@@ -1,14 +1,11 @@
-import { Route, Routes } from 'react-router-dom'
-import SignInPage from './pages/signin/SignInPage'
-import HomePage from './pages/home/HomePage'
-import IndexPage from './pages/categories/IndexPage'
+import { listen } from './redux/listener'
+import { useEffect } from 'react'
+import { AppRoutes } from './routes'
 
 export default function App() {
-  return (
-    <Routes>
-      <Route path='/signin' element={<SignInPage />} />
-      <Route path='/' element={<HomePage />} />
-      <Route path='/categories' element={<IndexPage />} />
-    </Routes>
-  )
+  useEffect(() => {
+    listen()
+  }, [])
+
+  return <AppRoutes />
 }
