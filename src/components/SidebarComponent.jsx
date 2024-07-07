@@ -4,8 +4,8 @@ import {
   Home,
   List,
   Speech,
-  Users,
   UsersRound,
+  WalletCards,
 } from 'lucide-react'
 import {
   accessCategories,
@@ -58,20 +58,20 @@ export default function SidebarComponent({ role }) {
               Talents
             </SideLinkComponent>
             <SideLinkComponent
+              navigate='/payments'
+              role={role}
+              roles={accessParticipant.read}
+            >
+              <WalletCards className='h-4 w-4' />
+              Payments
+            </SideLinkComponent>
+            <SideLinkComponent
               navigate='/events'
               role={role}
               roles={accessEvents.read}
             >
               <CalendarCheck className='h-4 w-4' />
               Events
-            </SideLinkComponent>
-            <SideLinkComponent
-              navigate='/participants'
-              role={role}
-              roles={accessParticipant.read}
-            >
-              <Users className='h-4 w-4' />
-              Participants
             </SideLinkComponent>
             <SideLinkComponent
               navigate='/transactions'

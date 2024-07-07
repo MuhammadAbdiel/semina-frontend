@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchOneCategory } from '@/redux/category/action'
+import { fetchEditCategory } from '@/redux/categories/action'
 
 const editSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(50, {
@@ -36,36 +37,11 @@ export default function EditPage({ categoryId }) {
   })
 
   const onUpdate = async ({ name }) => {
-    console.log(name)
-    // setIsLoading(true)
-    // try {
-    //   await axios.post(
-    //     `${config.api_host_dev}/cms/categories`,
-    //     {
-    //       name,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     },
-    //   )
-    //   Swal.fire({
-    //     title: 'Success',
-    //     text: 'Category Created Successfully',
-    //     icon: 'success',
-    //   })
-    // } catch (error) {
-    //   Swal.fire({
-    //     title: 'Failed',
-    //     text: error.response.data.msg ?? 'Internal Server Error',
-    //     icon: 'error',
-    //   })
-    // } finally {
-    //   setIsLoading(false)
-    //   setOpen(false)
-    // }
-    // form.reset()
+    setIsLoading(true)
+    dispatch(fetchEditCategory(categoryId, name))
+    setIsLoading(false)
+    setOpen(false)
+    form.reset()
   }
 
   useEffect(() => {
@@ -80,8 +56,15 @@ export default function EditPage({ categoryId }) {
     }
   }, [category.data, form])
 
+  const handleDialogChange = (isOpen) => {
+    setOpen(isOpen)
+    if (!isOpen) {
+      form.reset()
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
         <SButtonComponent
           size='sm'

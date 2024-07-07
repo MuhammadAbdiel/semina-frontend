@@ -6,8 +6,18 @@ export default function TextInputComponent({
   placeholder,
   className,
   field,
+  handleChange,
 }) {
-  return (
+  return type === 'file' ? (
+    <Input
+      className={className}
+      id={id}
+      type={type}
+      placeholder={placeholder}
+      onChangeCapture={handleChange}
+      {...field}
+    />
+  ) : (
     <Input
       className={className}
       id={id}

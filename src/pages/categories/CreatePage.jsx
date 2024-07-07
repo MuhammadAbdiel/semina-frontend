@@ -12,10 +12,8 @@ import CategoryForm from './CategoryForm'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { postData } from '@/utils/fetch'
-import Swal from 'sweetalert2'
 import { useDispatch } from 'react-redux'
-import { fetchCategories } from '@/redux/categories/action'
+import { fetchAddCategory } from '@/redux/categories/action'
 
 const createSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(50, {
@@ -37,32 +35,21 @@ export default function CreatePage() {
 
   const onCreate = async ({ name }) => {
     setIsLoading(true)
-
-    const res = await postData('/cms/categories', {
-      name,
-    })
-
-    if (res?.data?.data) {
-      Swal.fire({
-        title: 'Success',
-        text: 'Category Created Successfully',
-        icon: 'success',
-      })
-      dispatch(fetchCategories())
-    } else {
-      Swal.fire({
-        title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
-        icon: 'error',
-      })
-    }
+    dispatch(fetchAddCategory(name))
     setIsLoading(false)
     setOpen(false)
     form.reset()
   }
 
+  const handleDialogChange = (isOpen) => {
+    setOpen(isOpen)
+    if (!isOpen) {
+      form.reset()
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
         <SButtonComponent
           size='sm'

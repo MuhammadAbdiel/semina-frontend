@@ -2,8 +2,8 @@ import {
   START_FETCHING_CATEGORY,
   SUCCESS_FETCHING_CATEGORY,
   ERROR_FETCHING_CATEGORY,
+  SUCCESS_CLEAR_CATEGORY,
 } from './constant'
-
 import { getData } from '../../utils/fetch'
 
 // START
@@ -21,18 +21,26 @@ export const successFetchingCategory = ({ category }) => {
   }
 }
 
+// ERROR
 export const errorFetchingCategory = () => {
   return {
     type: ERROR_FETCHING_CATEGORY,
   }
 }
 
+export const clearCategory = () => {
+  return {
+    type: SUCCESS_CLEAR_CATEGORY,
+  }
+}
+
 export const fetchOneCategory = ({ id }) => {
   return async (dispatch) => {
+    dispatch(clearCategory())
     dispatch(startFetchingCategory())
 
     try {
-      let res = await getData(`/cms/categories/${id}`)
+      const res = await getData(`/cms/categories/${id}`)
 
       dispatch(
         successFetchingCategory({

@@ -1,0 +1,7 @@
+export const START_FETCHING_TALENTS = 'redux/talents/START_FETCHING_TALENTS'
+export const SUCCESS_FETCHING_TALENTS = 'redux/talents/SUCCESS_FETCHING_TALENTS'
+export const ERROR_FETCHING_TALENTS = 'redux/talents/ERROR_FETCHING_TALENTS'
+export const SUCCESS_ADD_TALENT = 'redux/talents/SUCCESS_ADD_TALENT'
+export const SUCCESS_EDIT_TALENT = 'redux/talents/SUCCESS_EDIT_TALENT'
+export const SUCCESS_DELETE_TALENT = 'redux/talents/SUCCESS_DELETE_TALENT'
+export const SET_KEYWORD = 'redux/talents/SET_KEYWORD'

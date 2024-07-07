@@ -1,8 +1,8 @@
 import {
-  START_FETCHING_CATEGORY,
-  SUCCESS_FETCHING_CATEGORY,
-  ERROR_FETCHING_CATEGORY,
-  SUCCESS_CLEAR_CATEGORY,
+  START_FETCHING_TALENT,
+  SUCCESS_FETCHING_TALENT,
+  ERROR_FETCHING_TALENT,
+  SUCCESS_CLEAR_TALENT,
 } from './constant'
 
 const statuslist = {
@@ -19,20 +19,20 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case START_FETCHING_CATEGORY:
+    case START_FETCHING_TALENT:
       return { ...state, status: statuslist.process }
 
-    case ERROR_FETCHING_CATEGORY:
+    case ERROR_FETCHING_TALENT:
       return { ...state, status: statuslist.error }
 
-    case SUCCESS_FETCHING_CATEGORY:
+    case SUCCESS_FETCHING_TALENT:
       return {
         ...state,
         status: statuslist.success,
-        data: action.category,
+        data: action.talent,
       }
 
-    case SUCCESS_CLEAR_CATEGORY:
+    case SUCCESS_CLEAR_TALENT:
       return {
         ...state,
         status: statuslist.success,

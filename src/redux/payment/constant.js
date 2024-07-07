@@ -1,0 +1,5 @@
+export const START_FETCHING_PAYMENT = 'redux/category/START_FETCHING_PAYMENT'
+export const SUCCESS_FETCHING_PAYMENT =
+  'redux/category/SUCCESS_FETCHING_PAYMENT'
+export const ERROR_FETCHING_PAYMENT = 'redux/category/ERROR_FETCHING_PAYMENT'
+export const SUCCESS_CLEAR_PAYMENT = 'redux/category/SUCCESS_CLEAR_PAYMENT'

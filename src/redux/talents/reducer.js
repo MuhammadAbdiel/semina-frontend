@@ -1,10 +1,11 @@
 import {
-  START_FETCHING_CATEGORIES,
-  SUCCESS_FETCHING_CATEGORIES,
-  ERROR_FETCHING_CATEGORIES,
-  SUCCESS_ADD_CATEGORY,
-  SUCCESS_EDIT_CATEGORY,
-  SUCCESS_DELETE_CATEGORY,
+  START_FETCHING_TALENTS,
+  SUCCESS_FETCHING_TALENTS,
+  ERROR_FETCHING_TALENTS,
+  SUCCESS_ADD_TALENT,
+  SUCCESS_EDIT_TALENT,
+  SUCCESS_DELETE_TALENT,
+  SET_KEYWORD,
 } from './constant'
 
 const statuslist = {
@@ -16,47 +17,52 @@ const statuslist = {
 
 const initialState = {
   data: [],
+  keyword: '',
   status: statuslist.idle,
 }
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case START_FETCHING_CATEGORIES:
+    case START_FETCHING_TALENTS:
       return { ...state, status: statuslist.process }
 
-    case ERROR_FETCHING_CATEGORIES:
+    case ERROR_FETCHING_TALENTS:
       return { ...state, status: statuslist.error }
 
-    case SUCCESS_FETCHING_CATEGORIES:
+    case SUCCESS_FETCHING_TALENTS:
       return {
         ...state,
         status: statuslist.success,
-        data: action.categories,
+        data: action.talents,
       }
 
-    case SUCCESS_ADD_CATEGORY:
+    case SUCCESS_ADD_TALENT:
       return {
         ...state,
         status: statuslist.success,
-        data: [...state.data, action.category],
+        data: [...state.data, action.talent],
       }
 
-    case SUCCESS_EDIT_CATEGORY:
+    case SUCCESS_EDIT_TALENT:
       return {
         ...state,
         status: statuslist.success,
-        data: state.data.map((category) =>
-          category._id === action.categoryId ? action.category : category,
+        data: state.data.map((talent) =>
+          talent._id === action.talentId ? action.talent : talent,
         ),
       }
 
-    case SUCCESS_DELETE_CATEGORY:
+    case SUCCESS_DELETE_TALENT:
       return {
         ...state,
         status: statuslist.success,
-        data: state.data.filter(
-          (category) => category._id !== action.categoryId,
-        ),
+        data: state.data.filter((talent) => talent._id !== action.talentId),
+      }
+
+    case SET_KEYWORD:
+      return {
+        ...state,
+        keyword: action.keyword,
       }
 
     default:

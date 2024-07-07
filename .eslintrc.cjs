@@ -21,5 +21,6 @@ module.exports = {
     'no-undef': 'off',
     'react/no-unknown-property': 'off',
     'react/display-name': 'off',
+    'react-hooks/rules-of-hooks': 'off',
   },
 }

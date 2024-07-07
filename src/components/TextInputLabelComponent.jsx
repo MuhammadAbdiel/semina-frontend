@@ -18,6 +18,7 @@ export default function TextInputLabelComponent({
   id,
   type,
   placeholder,
+  handleChange,
 }) {
   const [passwordType, setPasswordType] = useState('password')
 
@@ -64,6 +65,7 @@ export default function TextInputLabelComponent({
                 type={type}
                 placeholder={placeholder}
                 field={field}
+                handleChange={handleChange}
               />
             )}
           </FormControl>

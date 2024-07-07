@@ -1,10 +1,10 @@
 import {
-  START_FETCHING_CATEGORIES,
-  SUCCESS_FETCHING_CATEGORIES,
-  ERROR_FETCHING_CATEGORIES,
-  SUCCESS_ADD_CATEGORY,
-  SUCCESS_EDIT_CATEGORY,
-  SUCCESS_DELETE_CATEGORY,
+  START_FETCHING_PAYMENTS,
+  SUCCESS_FETCHING_PAYMENTS,
+  ERROR_FETCHING_PAYMENTS,
+  SUCCESS_ADD_PAYMENT,
+  SUCCESS_EDIT_PAYMENT,
+  SUCCESS_DELETE_PAYMENT,
 } from './constant'
 
 const statuslist = {
@@ -21,42 +21,40 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case START_FETCHING_CATEGORIES:
+    case START_FETCHING_PAYMENTS:
       return { ...state, status: statuslist.process }
 
-    case ERROR_FETCHING_CATEGORIES:
+    case ERROR_FETCHING_PAYMENTS:
       return { ...state, status: statuslist.error }
 
-    case SUCCESS_FETCHING_CATEGORIES:
+    case SUCCESS_FETCHING_PAYMENTS:
       return {
         ...state,
         status: statuslist.success,
-        data: action.categories,
+        data: action.payments,
       }
 
-    case SUCCESS_ADD_CATEGORY:
+    case SUCCESS_ADD_PAYMENT:
       return {
         ...state,
         status: statuslist.success,
-        data: [...state.data, action.category],
+        data: [...state.data, action.payment],
       }
 
-    case SUCCESS_EDIT_CATEGORY:
+    case SUCCESS_EDIT_PAYMENT:
       return {
         ...state,
         status: statuslist.success,
-        data: state.data.map((category) =>
-          category._id === action.categoryId ? action.category : category,
+        data: state.data.map((payment) =>
+          payment._id === action.paymentId ? action.payment : payment,
         ),
       }
 
-    case SUCCESS_DELETE_CATEGORY:
+    case SUCCESS_DELETE_PAYMENT:
       return {
         ...state,
         status: statuslist.success,
-        data: state.data.filter(
-          (category) => category._id !== action.categoryId,
-        ),
+        data: state.data.filter((payment) => payment._id !== action.paymentId),
       }
 
     default:

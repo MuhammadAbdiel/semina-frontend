@@ -4,6 +4,8 @@ import GuestOnlyRoute from '../components/GuestOnlyRoute'
 import SignInPage from '../pages/signin/SignInPage'
 import HomeRoute from './HomeRoute'
 import CategoryRoute from './CategoryRoute'
+import TalentRoute from './TalentRoute'
+import PaymentRoute from './PaymentRoute'
 
 export function AppRoutes() {
   return (
@@ -26,6 +28,8 @@ export function AppRoutes() {
       >
         <Route path='/dashboard/*' element={<HomeRoute />} />
         <Route path='/categories/*' element={<CategoryRoute />} />
+        <Route path='/talents/*' element={<TalentRoute />} />
+        <Route path='/payments/*' element={<PaymentRoute />} />
         <Route path='' element={<Navigate to='/dashboard' replace={true} />} />
       </Route>
     </Routes>

@@ -1,0 +1,4 @@
+export const START_FETCHING_TALENT = 'redux/category/START_FETCHING_TALENT'
+export const SUCCESS_FETCHING_TALENT = 'redux/category/SUCCESS_FETCHING_TALENT'
+export const ERROR_FETCHING_TALENT = 'redux/category/ERROR_FETCHING_TALENT'
+export const SUCCESS_CLEAR_TALENT = 'redux/category/SUCCESS_CLEAR_TALENT'

@@ -4,3 +4,7 @@ export const SUCCESS_FETCHING_CATEGORIES =
   'redux/categories/SUCCESS_FETCHING_CATEGORIES'
 export const ERROR_FETCHING_CATEGORIES =
   'redux/categories/ERROR_FETCHING_CATEGORIES'
+export const SUCCESS_ADD_CATEGORY = 'redux/categories/SUCCESS_ADD_CATEGORY'
+export const SUCCESS_EDIT_CATEGORY = 'redux/categories/SUCCESS_EDIT_CATEGORY'
+export const SUCCESS_DELETE_CATEGORY =
+  'redux/categories/SUCCESS_DELETE_CATEGORY'

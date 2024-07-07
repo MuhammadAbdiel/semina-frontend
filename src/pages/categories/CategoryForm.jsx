@@ -11,7 +11,7 @@ export default function CategoryForm({ edit, form, handleCreate, isLoading }) {
           name='name'
           label='Name'
           id='name'
-          type='name'
+          type='text'
           placeholder='Name'
         />
         <SButtonComponent disabled={isLoading} type='submit' className='w-full'>

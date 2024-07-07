@@ -7,8 +7,8 @@ import {
   List,
   Menu,
   Speech,
-  Users,
   UsersRound,
+  WalletCards,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -99,20 +99,20 @@ export default function NavbarComponent({ role }) {
               Talents
             </NavLinkComponent>
             <NavLinkComponent
+              navigate='/payments'
+              role={role}
+              roles={accessParticipant.read}
+            >
+              <WalletCards className='h-5 w-5' />
+              Payments
+            </NavLinkComponent>
+            <NavLinkComponent
               navigate='/events'
               role={role}
               roles={accessEvents.read}
             >
               <CalendarCheck className='h-5 w-5' />
               Events
-            </NavLinkComponent>
-            <NavLinkComponent
-              navigate='/participants'
-              role={role}
-              roles={accessParticipant.read}
-            >
-              <Users className='h-5 w-5' />
-              Participants
             </NavLinkComponent>
             <NavLinkComponent
               navigate='/transactions'
