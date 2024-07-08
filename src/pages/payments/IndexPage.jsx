@@ -104,7 +104,7 @@ export default function IndexPage() {
               onChange={(event) =>
                 table.getColumn('type')?.setFilterValue(event.target.value)
               }
-              className='max-w-sm ml-auto'
+              className='max-w-sm'
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

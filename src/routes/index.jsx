@@ -6,6 +6,8 @@ import HomeRoute from './HomeRoute'
 import CategoryRoute from './CategoryRoute'
 import TalentRoute from './TalentRoute'
 import PaymentRoute from './PaymentRoute'
+import EventRoute from './EventRoute'
+import OrderRoute from './OrderRoute'
 
 export function AppRoutes() {
   return (
@@ -30,6 +32,8 @@ export function AppRoutes() {
         <Route path='/categories/*' element={<CategoryRoute />} />
         <Route path='/talents/*' element={<TalentRoute />} />
         <Route path='/payments/*' element={<PaymentRoute />} />
+        <Route path='/events/*' element={<EventRoute />} />
+        <Route path='/orders/*' element={<OrderRoute />} />
         <Route path='' element={<Navigate to='/dashboard' replace={true} />} />
       </Route>
     </Routes>

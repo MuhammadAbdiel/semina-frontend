@@ -17,11 +17,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
-import CreatePage from './CreatePage'
 import { useDispatch, useSelector } from 'react-redux'
 import STableComponent from '@/components/STableComponent'
-import { accessTalents } from '@/access'
-import { fetchTalents, setKeyword } from '@/redux/talents/action'
+import { fetchOrders, setDate, setPage } from '@/redux/orders/action'
+import { formatDate } from '@/utils/formatDate'
+import DateRangeComponent from '@/components/DateRangeComponent'
 
 export default function IndexPage() {
   const dispatch = useDispatch()
@@ -29,28 +29,9 @@ export default function IndexPage() {
   const [columnFilters, setColumnFilters] = useState([])
   const [columnVisibility, setColumnVisibility] = useState({})
   const [rowSelection, setRowSelection] = useState({})
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
-  const talents = useSelector((state) => state.talents)
-  const data = talents.data
-
-  const [access, setAccess] = useState({
-    create: false,
-    delete: false,
-    edit: false,
-  })
-
-  const checkAccess = () => {
-    let { role } = localStorage.getItem('auth')
-      ? JSON.parse(localStorage.getItem('auth'))
-      : {}
-    const access = { create: false, delete: false, edit: false }
-    Object.keys(accessTalents).forEach(function (key) {
-      if (accessTalents[key].indexOf(role) >= 0) {
-        access[key] = true
-      }
-    })
-    setAccess(access)
-  }
+  let [isShowed, setIsShowed] = useState(false)
+  const orders = useSelector((state) => state.orders)
+  const data = orders.data
 
   const table = useReactTable({
     data,
@@ -68,40 +49,52 @@ export default function IndexPage() {
       columnFilters,
       columnVisibility,
       rowSelection,
-      pagination,
     },
-    onPaginationChange: setPagination,
     defaultColumns: {
       minSize: 10,
       maxSize: 100,
     },
   })
 
-  const handlePageSizeChange = (pageSize) => {
-    setPagination((prev) => ({ ...prev, pageSize }))
-  }
-
   useEffect(() => {
-    checkAccess()
-  }, [])
+    dispatch(fetchOrders())
+  }, [dispatch, orders.page, orders.date])
 
-  useEffect(() => {
-    dispatch(fetchTalents())
-  }, [dispatch, talents.keyword])
+  const displayDate = `${
+    orders.date?.startDate ? formatDate(orders.date?.startDate) : ''
+  }${orders.date?.endDate ? ' - ' + formatDate(orders.date.endDate) : ''}`
 
   return (
     <DashboardLayout>
       <div className='flex items-center'>
-        <h1 className='text-lg font-semibold md:text-2xl'>Talents</h1>
+        <h1 className='text-lg font-semibold md:text-2xl'>Orders</h1>
       </div>
       <div className='flex justify-center rounded-lg border border-dashed shadow-sm p-3'>
         <div className='w-full'>
-          <div className='flex items-center py-4'>
-            {access.create && <CreatePage />}
+          <div className='flex gap-3 items-center py-4'>
+            <div className='relative'>
+              <Input
+                readOnly
+                value={displayDate}
+                className='max-w-sm cursor-pointer'
+                onClick={() => setIsShowed(true)}
+              />
+              {isShowed ? (
+                <DateRangeComponent
+                  date={orders.date}
+                  setIsShowed={() => setIsShowed(!isShowed)}
+                  onChangeDate={(ranges) => dispatch(setDate(ranges.selection))}
+                />
+              ) : (
+                ''
+              )}
+            </div>
             <Input
-              placeholder='Filter name'
-              value={talents.keyword}
-              onChange={(event) => dispatch(setKeyword(event.target.value))}
+              placeholder='Filter title'
+              value={table.getColumn('title')?.getFilterValue() ?? ''}
+              onChange={(event) =>
+                table.getColumn('title')?.setFilterValue(event.target.value)
+              }
               className='max-w-sm'
             />
             <DropdownMenu>
@@ -132,12 +125,13 @@ export default function IndexPage() {
             </DropdownMenu>
           </div>
           <STableComponent
-            access={access}
-            status={talents.status}
+            order={true}
+            data={data}
+            status={orders.status}
+            pages={orders.pages}
             table={table}
             columns={columns}
-            handlePageSizeChange={handlePageSizeChange}
-            pagination={pagination}
+            handlePageClick={({ selected }) => dispatch(setPage(selected + 1))}
           />
         </div>
       </div>

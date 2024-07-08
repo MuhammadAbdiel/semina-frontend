@@ -74,12 +74,12 @@ export default function SidebarComponent({ role }) {
               Events
             </SideLinkComponent>
             <SideLinkComponent
-              navigate='/transactions'
+              navigate='/orders'
               role={role}
               roles={accessOrders.read}
             >
               <CreditCard className='h-4 w-4' />
-              Transactions
+              Orders
             </SideLinkComponent>
           </nav>
         </div>

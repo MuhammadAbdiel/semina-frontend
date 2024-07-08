@@ -115,12 +115,12 @@ export default function NavbarComponent({ role }) {
               Events
             </NavLinkComponent>
             <NavLinkComponent
-              navigate='/transactions'
+              navigate='/orders'
               role={role}
               roles={accessOrders.read}
             >
               <CreditCard className='h-5 w-5' />
-              Transactions
+              Orders
             </NavLinkComponent>
           </nav>
         </SheetContent>
@@ -134,10 +134,10 @@ export default function NavbarComponent({ role }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
+          <DropdownMenuLabel className='capitalize'>{role}</DropdownMenuLabel>
+          {/* <DropdownMenuSeparator />
           <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuItem>Support</DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>

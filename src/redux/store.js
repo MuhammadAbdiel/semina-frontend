@@ -13,9 +13,9 @@ import talentsReducer from './talents/reducer'
 import talentReducer from './talent/reducer'
 import paymentsReducer from './payments/reducer'
 import paymentReducer from './payment/reducer'
-// import eventsReducer from './events/reducer'
-// import listsReducer from './lists/reducer'
-// import ordersReducer from './orders/reducer'
+import eventsReducer from './events/reducer'
+import listsReducer from './lists/reducer'
+import ordersReducer from './orders/reducer'
 // import notifReducer from './notif/reducer'
 
 const composerEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -28,9 +28,9 @@ const rootReducers = combineReducers({
   talent: talentReducer,
   payments: paymentsReducer,
   payment: paymentReducer,
-  // events: eventsReducer,
-  // lists: listsReducer,
-  // orders: ordersReducer,
+  events: eventsReducer,
+  lists: listsReducer,
+  orders: ordersReducer,
   // notif: notifReducer,
 })
 const store = createStore(

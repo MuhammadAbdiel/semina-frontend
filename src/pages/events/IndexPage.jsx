@@ -17,11 +17,19 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
-import CreatePage from './CreatePage'
+// import CreatePage from './CreatePage'
 import { useDispatch, useSelector } from 'react-redux'
 import STableComponent from '@/components/STableComponent'
-import { accessTalents } from '@/access'
-import { fetchTalents, setKeyword } from '@/redux/talents/action'
+import { accessEvents } from '@/access'
+import {
+  fetchEvents,
+  setCategory,
+  setKeyword,
+  setTalent,
+} from '@/redux/events/action'
+import { fetchListCategories, fetchListTalents } from '@/redux/lists/action'
+import Select from 'react-select'
+import CreatePage from './CreatePage'
 
 export default function IndexPage() {
   const dispatch = useDispatch()
@@ -30,8 +38,10 @@ export default function IndexPage() {
   const [columnVisibility, setColumnVisibility] = useState({})
   const [rowSelection, setRowSelection] = useState({})
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
-  const talents = useSelector((state) => state.talents)
-  const data = talents.data
+
+  const lists = useSelector((state) => state.lists)
+  const events = useSelector((state) => state.events)
+  const data = events.data
 
   const [access, setAccess] = useState({
     create: false,
@@ -44,8 +54,8 @@ export default function IndexPage() {
       ? JSON.parse(localStorage.getItem('auth'))
       : {}
     const access = { create: false, delete: false, edit: false }
-    Object.keys(accessTalents).forEach(function (key) {
-      if (accessTalents[key].indexOf(role) >= 0) {
+    Object.keys(accessEvents).forEach(function (key) {
+      if (accessEvents[key].indexOf(role) >= 0) {
         access[key] = true
       }
     })
@@ -86,23 +96,46 @@ export default function IndexPage() {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchTalents())
-  }, [dispatch, talents.keyword])
+    dispatch(fetchListTalents())
+    dispatch(fetchListCategories())
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(fetchEvents())
+  }, [dispatch, events.keyword, events.category, events.talent])
 
   return (
     <DashboardLayout>
       <div className='flex items-center'>
-        <h1 className='text-lg font-semibold md:text-2xl'>Talents</h1>
+        <h1 className='text-lg font-semibold md:text-2xl'>Events</h1>
       </div>
       <div className='flex justify-center rounded-lg border border-dashed shadow-sm p-3'>
         <div className='w-full'>
           <div className='flex items-center py-4'>
             {access.create && <CreatePage />}
             <Input
-              placeholder='Filter name'
-              value={talents.keyword}
+              placeholder='Filter title'
+              value={events.keyword}
               onChange={(event) => dispatch(setKeyword(event.target.value))}
-              className='max-w-sm'
+              className='max-w-sm me-2'
+            />
+            <Select
+              name='category'
+              isClearable={true}
+              placeholder='Filter category'
+              options={lists.categories}
+              onChange={(e) => dispatch(setCategory(e))}
+              value={events.category}
+              className='max-w me-2'
+            />
+            <Select
+              name='talent'
+              isClearable={true}
+              placeholder='Filter talent'
+              options={lists.talents}
+              onChange={(e) => dispatch(setTalent(e))}
+              value={events.talent}
+              className='max-w me-2'
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -133,7 +166,7 @@ export default function IndexPage() {
           </div>
           <STableComponent
             access={access}
-            status={talents.status}
+            status={events.status}
             table={table}
             columns={columns}
             handlePageSizeChange={handlePageSizeChange}
