@@ -45,3 +45,17 @@ export const accessOrders = {
   edit: ['organizer', 'admin', 'owner'],
   delete: ['organizer', 'admin', 'owner'],
 }
+
+export const accessOrganizers = {
+  read: ['owner'],
+  create: ['owner'],
+  edit: ['owner'],
+  delete: ['owner'],
+}
+
+export const accessAdmins = {
+  read: ['organizer'],
+  create: ['organizer'],
+  edit: ['organizer'],
+  delete: ['organizer'],
+}

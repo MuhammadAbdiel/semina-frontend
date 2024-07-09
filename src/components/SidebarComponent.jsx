@@ -4,14 +4,18 @@ import {
   Home,
   List,
   Speech,
+  UserCheck,
+  UserCog,
   UsersRound,
   WalletCards,
 } from 'lucide-react'
 import {
+  accessAdmins,
   accessCategories,
   accessEvents,
   accessHome,
   accessOrders,
+  accessOrganizers,
   accessParticipant,
   accessTalents,
 } from '@/access'
@@ -72,6 +76,22 @@ export default function SidebarComponent({ role }) {
             >
               <CalendarCheck className='h-4 w-4' />
               Events
+            </SideLinkComponent>
+            <SideLinkComponent
+              navigate='/organizers'
+              role={role}
+              roles={accessOrganizers.read}
+            >
+              <UserCog className='h-4 w-4' />
+              Organizers
+            </SideLinkComponent>
+            <SideLinkComponent
+              navigate='/admins'
+              role={role}
+              roles={accessAdmins.read}
+            >
+              <UserCheck className='h-4 w-4' />
+              Admins
             </SideLinkComponent>
             <SideLinkComponent
               navigate='/orders'

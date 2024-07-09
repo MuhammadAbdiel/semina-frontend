@@ -12,6 +12,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 
 export default function TextInputLabelComponent({
+  auth,
   form,
   name,
   label,
@@ -32,18 +33,20 @@ export default function TextInputLabelComponent({
       name={name}
       render={({ field }) => (
         <FormItem>
-          {name === 'password' ? (
+          {type === 'password' ? (
             <div className='flex items-center justify-between'>
               <FormLabel>{label}</FormLabel>
-              <Link to='#' className='ml-auto inline-block text-sm underline'>
-                Forgot your password?
-              </Link>
+              {auth && (
+                <Link to='#' className='ml-auto inline-block text-sm underline'>
+                  Forgot your password?
+                </Link>
+              )}
             </div>
           ) : (
             <FormLabel>{label}</FormLabel>
           )}
           <FormControl>
-            {name === 'password' ? (
+            {type === 'password' ? (
               <div className='relative'>
                 <TextInputComponent
                   id={id}

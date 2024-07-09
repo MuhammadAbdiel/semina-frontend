@@ -8,6 +8,8 @@ import TalentRoute from './TalentRoute'
 import PaymentRoute from './PaymentRoute'
 import EventRoute from './EventRoute'
 import OrderRoute from './OrderRoute'
+import OrganizerRoute from './OrganizerRoute'
+import AdminRoute from './AdminRoute'
 
 export function AppRoutes() {
   return (
@@ -33,6 +35,8 @@ export function AppRoutes() {
         <Route path='/talents/*' element={<TalentRoute />} />
         <Route path='/payments/*' element={<PaymentRoute />} />
         <Route path='/events/*' element={<EventRoute />} />
+        <Route path='/organizers/*' element={<OrganizerRoute />} />
+        <Route path='/admins/*' element={<AdminRoute />} />
         <Route path='/orders/*' element={<OrderRoute />} />
         <Route path='' element={<Navigate to='/dashboard' replace={true} />} />
       </Route>

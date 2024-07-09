@@ -92,7 +92,7 @@ export const fetchAddPayment = (type, image) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }
@@ -116,7 +116,7 @@ export const fetchEditPayment = (paymentId, type, image) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }
@@ -137,7 +137,7 @@ export const fetchDeletePayment = (paymentId) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }

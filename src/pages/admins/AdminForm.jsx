@@ -2,10 +2,18 @@ import SButtonComponent from '@/components/SButtonComponent'
 import TextInputLabelComponent from '@/components/TextInputLabelComponent'
 import { Form } from '@/components/ui/form'
 
-export default function SignInForm({ form, onSignin, isLoading }) {
+export default function AdminForm({ edit, form, handleCreate, isLoading }) {
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSignin)} className='space-y-8'>
+      <form onSubmit={form.handleSubmit(handleCreate)} className='space-y-8'>
+        <TextInputLabelComponent
+          form={form}
+          name='name'
+          label='Name'
+          id='name'
+          type='text'
+          placeholder='Name'
+        />
         <TextInputLabelComponent
           form={form}
           name='email'
@@ -15,7 +23,6 @@ export default function SignInForm({ form, onSignin, isLoading }) {
           placeholder='Email'
         />
         <TextInputLabelComponent
-          auth
           form={form}
           name='password'
           label='Password'
@@ -23,8 +30,16 @@ export default function SignInForm({ form, onSignin, isLoading }) {
           type='password'
           placeholder='Password'
         />
+        <TextInputLabelComponent
+          form={form}
+          name='confirmPassword'
+          label='Password Confirmation'
+          id='confirmPassword'
+          type='password'
+          placeholder='Password Confirmation'
+        />
         <SButtonComponent disabled={isLoading} type='submit' className='w-full'>
-          Sign In
+          {edit ? 'Update' : 'Submit'}
         </SButtonComponent>
       </form>
     </Form>

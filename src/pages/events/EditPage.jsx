@@ -6,23 +6,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SButtonComponent from '@/components/SButtonComponent'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { postData } from '@/utils/fetch'
+import { getData, postData, putData } from '@/utils/fetch'
 import Swal from 'sweetalert2'
 import EventForm from './EventForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchEvents } from '@/redux/events/action'
+import { Pencil } from 'lucide-react'
+import { fetchListCategories, fetchListTalents } from '@/redux/lists/action'
+import moment from 'moment'
 
-const createSchema = z.object({
+const editSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }).max(50, {
     message: 'Title must be less than 50 characters',
   }),
   date: z.string().min(1, { message: 'Date is required' }),
-  avatar: z.string().min(1, { message: 'Avatar is required' }),
   about: z.string().min(1, { message: 'About is required' }),
   venueName: z.string().min(1, { message: 'Venue Name is required' }),
   tagline: z.string().min(1, { message: 'Tagline is required' }),
@@ -44,9 +46,9 @@ const createSchema = z.object({
   talent: z.string().min(1, { message: 'Talent is required' }),
 })
 
-export default function CreatePage() {
+export default function EditPage({ eventId }) {
   const form = useForm({
-    resolver: zodResolver(createSchema),
+    resolver: zodResolver(editSchema),
     defaultValues: {
       title: '',
       date: '',
@@ -74,7 +76,28 @@ export default function CreatePage() {
   const [avatar, setAvatar] = useState('')
   const lists = useSelector((state) => state.lists)
 
-  const onCreate = async () => {
+  const fetchOneEvent = async () => {
+    const res = await getData(`/cms/events/${eventId}`)
+
+    if (res?.data?.data) {
+      setFile(res?.data?.data?.image._id)
+      setAvatar(res?.data?.data?.image.name)
+      form.setValue('title', res?.data?.data?.title)
+      form.setValue(
+        'date',
+        moment(res?.data?.data?.date).format('DD-MM-YYYY, h:mm:ss a'),
+      )
+      form.setValue('about', res?.data?.data?.about)
+      form.setValue('venueName', res?.data?.data?.venueName)
+      form.setValue('tagline', res?.data?.data?.tagline)
+      form.setValue('keyPoint', res?.data?.data?.keyPoint)
+      form.setValue('category', res?.data?.data?.category._id)
+      form.setValue('talent', res?.data?.data?.talent._id)
+      form.setValue('tickets', res?.data?.data?.tickets)
+    }
+  }
+
+  const onUpdate = async () => {
     setIsLoading(true)
     const payload = {
       date: form.getValues('date'),
@@ -89,11 +112,11 @@ export default function CreatePage() {
       tickets: form.getValues('tickets'),
     }
 
-    const res = await postData('/cms/events', payload)
+    const res = await putData(`/cms/events/${eventId}`, payload)
     if (res?.data?.data) {
       Swal.fire({
         title: 'Success',
-        text: 'Event Created Successfully',
+        text: 'Event Updated Successfully',
         icon: 'success',
       })
 
@@ -227,26 +250,36 @@ export default function CreatePage() {
     form.setValue('tickets', _temp)
   }
 
+  useEffect(() => {
+    fetchOneEvent()
+  }, [eventId, open])
+
+  useEffect(() => {
+    dispatch(fetchListTalents())
+    dispatch(fetchListCategories())
+  }, [dispatch])
+
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
         <SButtonComponent
           size='sm'
-          className='me-2 bg-blue-700 hover:bg-blue-800'
+          className='mx-1 bg-yellow-300 hover:bg-yellow-400'
         >
-          Add Event
+          <Pencil className='h-5 w-5' />
         </SButtonComponent>
       </DialogTrigger>
       <DialogContent
-        className={'lg:max-w-screen-lg overflow-y-auto max-h-screen'}
+        className={'lg:max-w-screen-lg overflow-y-scroll max-h-screen'}
       >
         <DialogHeader>
-          <DialogTitle>Create New Event</DialogTitle>
+          <DialogTitle>Edit Event</DialogTitle>
           <DialogDescription>
-            Create a new event and add it to your list.
+            Edit your event and update it to your list.
           </DialogDescription>
         </DialogHeader>
         <EventForm
+          edit
           avatar={avatar}
           isLoading={isLoading}
           form={form}
@@ -258,7 +291,7 @@ export default function CreatePage() {
           handlePlusTicket={handlePlusTicket}
           handleMinusTicket={handleMinusTicket}
           handleChange={handleChange}
-          handleCreate={onCreate}
+          handleCreate={onUpdate}
         />
       </DialogContent>
     </Dialog>

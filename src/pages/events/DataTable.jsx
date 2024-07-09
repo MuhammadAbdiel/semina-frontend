@@ -1,18 +1,25 @@
 import SButtonComponent from '@/components/SButtonComponent'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from '@/components/ui/dropdown-menu'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { ArrowUpDown, MoreHorizontal, Trash2 } from 'lucide-react'
+  ArrowUpDown,
+  //  MoreHorizontal,
+  NotebookPen,
+  Trash2,
+} from 'lucide-react'
 import moment from 'moment'
-// import EditPage from './EditPage'
-// import { useDispatch } from 'react-redux'
-// import { fetchDeleteTalent } from '@/redux/talents/action'
-// import Swal from 'sweetalert2'
+import EditPage from './EditPage'
+import { Badge } from '@/components/ui/badge'
+import { deleteData, putData } from '@/utils/fetch'
+import { fetchEvents } from '@/redux/events/action'
+import { useDispatch } from 'react-redux'
+import Swal from 'sweetalert2'
 
 export const columns = [
   {
@@ -103,9 +110,18 @@ export const columns = [
         </Button>
       )
     },
-    cell: ({ row }) => (
-      <div className='capitalize'>{row.getValue('statusEvent')}</div>
-    ),
+    cell: ({ row }) => {
+      const status = row.getValue('statusEvent')
+      return (
+        <div className='capitalize'>
+          <Badge
+            className={`${status === 'Published' ? 'bg-green-600 hover:bg-green-600' : 'bg-red-600 hover:bg-red-600'} cursor-default text-white`}
+          >
+            {row.getValue('statusEvent')}
+          </Badge>
+        </div>
+      )
+    },
   },
   {
     accessorKey: 'categoryName',
@@ -149,36 +165,95 @@ export const columns = [
     enableHiding: false,
     cell: ({ row }) => {
       const event = row.original
-      // const dispatch = useDispatch()
+      const dispatch = useDispatch()
 
-      // const handleDelete = async () => {
-      //   const result = await Swal.fire({
-      //     title: `Are you sure to delete ${event.title}?`,
-      //     text: "You won't be able to revert this!",
-      //     icon: 'warning',
-      //     showCancelButton: true,
-      //     confirmButtonColor: '#3085d6',
-      //     cancelButtonColor: '#d33',
-      //     confirmButtonText: 'Yes, delete it!',
-      //   })
+      const handleDelete = async () => {
+        const result = await Swal.fire({
+          title: `Are you sure to delete ${event.title}?`,
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+        })
 
-      //   if (result.isConfirmed) {
-      //     dispatch(fetchDeleteEvent(event._id))
-      //   }
-      // }
+        if (result.isConfirmed) {
+          const res = await deleteData(`/cms/events/${event._id}`)
+
+          if (res?.data?.data) {
+            Swal.fire({
+              title: 'Success',
+              text: `${event.title} Event Deleted Successfully`,
+              icon: 'success',
+            })
+
+            dispatch(fetchEvents())
+          } else {
+            Swal.fire({
+              title: 'Failed',
+              text: res?.response?.data?.msg ?? 'Internal Server Error',
+              icon: 'error',
+            })
+          }
+        }
+      }
+
+      const handleStatusUpdate = async () => {
+        const result = await Swal.fire({
+          title: `Are you sure to change ${event.title} status?`,
+          text: `Change ${event.title} status to ${
+            event.statusEvent === 'Published' ? 'Draft' : 'Published'
+          }`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, change it!',
+        })
+
+        if (result.isConfirmed) {
+          const res = await putData(`/cms/events/${event._id}/status`, {
+            statusEvent:
+              event.statusEvent === 'Published' ? 'Draft' : 'Published',
+          })
+          if (res?.data?.data) {
+            Swal.fire({
+              title: 'Success',
+              text: 'Status Event Updated Successfully',
+              icon: 'success',
+            })
+
+            dispatch(fetchEvents())
+          } else {
+            Swal.fire({
+              title: 'Failed',
+              text: res?.response?.data?.msg ?? 'Internal Server Error',
+              icon: 'error',
+            })
+          }
+        }
+      }
 
       return (
         <div className='flex items-center'>
-          {/* <EditPage eventId={event._id} /> */}
+          <EditPage eventId={event._id} />
           <SButtonComponent
-            // onClick={handleDelete}
+            onClick={handleStatusUpdate}
+            size='sm'
+            className='mx-1 bg-green-500 hover:bg-green-600'
+          >
+            <NotebookPen className='h-5 w-5' />
+          </SButtonComponent>
+          <SButtonComponent
+            onClick={handleDelete}
             size='sm'
             className='mx-1'
             variant='destructive'
           >
             <Trash2 className='h-5 w-5' />
           </SButtonComponent>
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' size='sm' className='mx-1'>
                 <span className='sr-only'>Open menu</span>
@@ -192,7 +267,7 @@ export const columns = [
                 Copy Event ID
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
       )
     },

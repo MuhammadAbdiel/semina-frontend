@@ -7,6 +7,8 @@ import {
   List,
   Menu,
   Speech,
+  UserCheck,
+  UserCog,
   UsersRound,
   WalletCards,
 } from 'lucide-react'
@@ -22,10 +24,12 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from './ui/button'
 import NavLinkComponent from './NavLinkComponent'
 import {
+  accessAdmins,
   accessCategories,
   accessEvents,
   accessHome,
   accessOrders,
+  accessOrganizers,
   accessParticipant,
   accessTalents,
 } from '@/access'
@@ -113,6 +117,22 @@ export default function NavbarComponent({ role }) {
             >
               <CalendarCheck className='h-5 w-5' />
               Events
+            </NavLinkComponent>
+            <NavLinkComponent
+              navigate='/organizers'
+              role={role}
+              roles={accessOrganizers.read}
+            >
+              <UserCog className='h-5 w-5' />
+              Organizers
+            </NavLinkComponent>
+            <NavLinkComponent
+              navigate='/admins'
+              role={role}
+              roles={accessAdmins.read}
+            >
+              <UserCheck className='h-5 w-5' />
+              Admins
             </NavLinkComponent>
             <NavLinkComponent
               navigate='/orders'

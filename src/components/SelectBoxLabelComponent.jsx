@@ -16,7 +16,7 @@ export default function SelectBoxLabelComponent({
   isClearable,
 }) {
   const handleSelectChange = (selectedOption) => {
-    form.setValue(name, selectedOption)
+    form.setValue(name, selectedOption.value)
   }
 
   return (
@@ -29,10 +29,11 @@ export default function SelectBoxLabelComponent({
           <FormControl>
             <Select
               {...field}
+              value={options.find((option) => option.value === field.value)}
               options={options}
               isClearable={isClearable}
               placeholder={placeholder}
-              onChange={handleSelectChange}
+              onChangeCapture={handleSelectChange}
               className='max-w'
             />
           </FormControl>

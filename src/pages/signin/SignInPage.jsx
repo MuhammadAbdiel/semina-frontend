@@ -49,7 +49,14 @@ export default function SignInPage() {
     })
 
     if (res?.data?.data) {
-      dispatch(userLogin(res.data.data.token, res.data.data.role))
+      dispatch(
+        userLogin(
+          res.data.data.token,
+          res.data.data.refreshToken,
+          res.data.data.role,
+          res.data.data.email,
+        ),
+      )
       Swal.fire({
         title: 'Success',
         text: 'Sign In Successfully',

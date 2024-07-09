@@ -12,11 +12,9 @@ export default function EventForm({
   form,
   lists,
   handlePlusKeyPoint,
-  handleChangeKeyPoint,
   handleMinusKeyPoint,
   handlePlusTicket,
   handleMinusTicket,
-  handleChangeTicket,
   handleChange,
   handleCreate,
   isLoading,
@@ -46,7 +44,7 @@ export default function EventForm({
           <TextInputLabelComponent
             form={form}
             name='date'
-            label='Name'
+            label='Date'
             id='date'
             type='datetime-local'
             placeholder='Date'
@@ -86,9 +84,9 @@ export default function EventForm({
             <div className='flex rounded-lg' key={index}>
               <TextInputGroupComponent
                 form={form}
-                name={`key.${index}`}
+                name={`keyPoint.${index}`}
                 label='Key Point'
-                id={`key.${index}`}
+                id={`keyPoint.${index}`}
                 type='text'
                 placeholder='Key Point'
               />
@@ -128,10 +126,10 @@ export default function EventForm({
             <TextInputLabelComponent
               form={form}
               name='avatar'
-              label='Avatar'
+              label='Image'
               id='avatar'
               type='file'
-              placeholder='Avatar'
+              placeholder='Image'
               handleChange={handleChange}
             />
           </div>
@@ -142,35 +140,27 @@ export default function EventForm({
           <div className='grid grid-cols-2 gap-4 mb-5' key={index}>
             <TextInputLabelComponent
               form={form}
-              name='about'
-              label='About'
-              id='about'
+              name={`tickets.${index}.type`}
+              label='Type'
+              id='type'
               type='text'
-              placeholder='About'
+              placeholder='Type'
             />
             <TextInputLabelComponent
               form={form}
-              name='about'
-              label='About'
-              id='about'
-              type='text'
-              placeholder='About'
+              name={`tickets.${index}.price`}
+              label='Price'
+              id='price'
+              type='number'
+              placeholder='Price'
             />
             <TextInputLabelComponent
               form={form}
-              name='about'
-              label='About'
-              id='about'
-              type='text'
-              placeholder='About'
-            />
-            <TextInputLabelComponent
-              form={form}
-              name='about'
-              label='About'
-              id='about'
-              type='text'
-              placeholder='About'
+              name={`tickets.${index}.stock`}
+              label='Stock'
+              id='stock'
+              type='number'
+              placeholder='Stock'
             />
             {index !== 0 && (
               <SButtonComponent onClick={() => handleMinusTicket(index)}>

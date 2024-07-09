@@ -108,7 +108,7 @@ export const fetchAddTalent = (name, role, image) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }
@@ -133,7 +133,7 @@ export const fetchEditTalent = (talentId, name, role, image) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }
@@ -154,7 +154,7 @@ export const fetchDeleteTalent = (talentId) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }

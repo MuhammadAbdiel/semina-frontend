@@ -88,7 +88,7 @@ export const fetchAddCategory = (name, role) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }
@@ -112,7 +112,7 @@ export const fetchEditCategory = (categoryId, name, role) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }
@@ -133,7 +133,7 @@ export const fetchDeleteCategory = (categoryId) => {
     } else {
       Swal.fire({
         title: 'Failed',
-        text: res.response.data.msg ?? 'Internal Server Error',
+        text: res?.response?.data?.msg ?? 'Internal Server Error',
         icon: 'error',
       })
     }
