@@ -1,8 +1,34 @@
-# React + Vite
+# SEMINA WEB - CLIENT (FRONT END)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Run Project
 
-Currently, two official plugins are available:
+Create .env file in the root directory :
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```sh
+cp .env.example .env
+```
+
+or
+
+```sh
+copy .env.example .env
+```
+
+Fill the .env file with the following :
+
+```sh
+REACT_APP_HOST_DEV=<YOUR_HOST> # http://localhost:<PORT>/api/v1
+REACT_APP_HOST_IMAGE_DEV=<YOUR_IMAGE_HOST> # http://localhost:<PORT>
+```
+
+Then, run the following command to install the dependencies :
+
+```sh
+npm install
+```
+
+Run the following command to start the server :
+
+```sh
+npm run dev
+```
