@@ -15,6 +15,8 @@ import Swal from 'sweetalert2'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { config } from '@/configs'
 import { Badge } from '@/components/ui/badge'
+import { useEffect, useState } from 'react'
+import { accessTalents } from '@/access'
 
 export const columns = [
   {
@@ -104,6 +106,28 @@ export const columns = [
       const talent = row.original
       const dispatch = useDispatch()
 
+      const [access, setAccess] = useState({
+        delete: false,
+        edit: false,
+      })
+
+      const checkAccess = () => {
+        let { role } = localStorage.getItem('auth')
+          ? JSON.parse(localStorage.getItem('auth'))
+          : {}
+        const access = { delete: false, edit: false }
+        Object.keys(accessTalents).forEach(function (key) {
+          if (accessTalents[key].indexOf(role) >= 0) {
+            access[key] = true
+          }
+        })
+        setAccess(access)
+      }
+
+      useEffect(() => {
+        checkAccess()
+      }, [])
+
       const handleDelete = async () => {
         const result = await Swal.fire({
           title: `Are you sure to delete ${talent.name}?`,
@@ -122,15 +146,17 @@ export const columns = [
 
       return (
         <div className='flex items-center'>
-          <EditPage talentId={talent._id} />
-          <SButtonComponent
-            onClick={handleDelete}
-            size='sm'
-            className='mx-1'
-            variant='destructive'
-          >
-            <Trash2 className='h-5 w-5' />
-          </SButtonComponent>
+          {access.edit && <EditPage talentId={talent._id} />}
+          {access.delete && (
+            <SButtonComponent
+              onClick={handleDelete}
+              size='sm'
+              className='mx-1'
+              variant='destructive'
+            >
+              <Trash2 className='h-5 w-5' />
+            </SButtonComponent>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' size='sm' className='mx-1'>

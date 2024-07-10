@@ -17,6 +17,8 @@ import EditPage from './EditPage'
 import { useDispatch } from 'react-redux'
 import { fetchDeleteCategory } from '@/redux/categories/action'
 import Swal from 'sweetalert2'
+import { useEffect, useState } from 'react'
+import { accessCategories } from '@/access'
 
 export const columns = [
   {
@@ -66,6 +68,28 @@ export const columns = [
       const category = row.original
       const dispatch = useDispatch()
 
+      const [access, setAccess] = useState({
+        delete: false,
+        edit: false,
+      })
+
+      const checkAccess = () => {
+        let { role } = localStorage.getItem('auth')
+          ? JSON.parse(localStorage.getItem('auth'))
+          : {}
+        const access = { delete: false, edit: false }
+        Object.keys(accessCategories).forEach(function (key) {
+          if (accessCategories[key].indexOf(role) >= 0) {
+            access[key] = true
+          }
+        })
+        setAccess(access)
+      }
+
+      useEffect(() => {
+        checkAccess()
+      }, [])
+
       const handleDelete = async () => {
         const result = await Swal.fire({
           title: `Are you sure to delete ${category.name}?`,
@@ -90,15 +114,17 @@ export const columns = [
           >
             <Eye className='h-5 w-5' />
           </SButtonComponent> */}
-          <EditPage categoryId={category._id} />
-          <SButtonComponent
-            onClick={handleDelete}
-            size='sm'
-            className='mx-1'
-            variant='destructive'
-          >
-            <Trash2 className='h-5 w-5' />
-          </SButtonComponent>
+          {access.edit && <EditPage category={category} />}
+          {access.delete && (
+            <SButtonComponent
+              onClick={handleDelete}
+              size='sm'
+              className='mx-1'
+              variant='destructive'
+            >
+              <Trash2 className='h-5 w-5' />
+            </SButtonComponent>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' size='sm' className='mx-1'>

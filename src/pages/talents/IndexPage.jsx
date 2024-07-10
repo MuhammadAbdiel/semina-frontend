@@ -35,15 +35,13 @@ export default function IndexPage() {
 
   const [access, setAccess] = useState({
     create: false,
-    delete: false,
-    edit: false,
   })
 
   const checkAccess = () => {
     let { role } = localStorage.getItem('auth')
       ? JSON.parse(localStorage.getItem('auth'))
       : {}
-    const access = { create: false, delete: false, edit: false }
+    const access = { create: false }
     Object.keys(accessTalents).forEach(function (key) {
       if (accessTalents[key].indexOf(role) >= 0) {
         access[key] = true

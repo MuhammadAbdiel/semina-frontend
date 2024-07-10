@@ -19,7 +19,7 @@ const handleError = (error) => {
           JSON.stringify({
             ...session,
             token: res.data.data.token,
-            refreshToken: res.data.data.refreshToken,
+            // refreshToken: res.data.data.refreshToken,
           }),
         )
         originalRequest.headers.Authorization = `Bearer ${res.data.data.token}`

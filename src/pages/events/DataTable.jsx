@@ -20,6 +20,8 @@ import { deleteData, putData } from '@/utils/fetch'
 import { fetchEvents } from '@/redux/events/action'
 import { useDispatch } from 'react-redux'
 import Swal from 'sweetalert2'
+import { accessEvents } from '@/access'
+import { useEffect, useState } from 'react'
 
 export const columns = [
   {
@@ -167,6 +169,28 @@ export const columns = [
       const event = row.original
       const dispatch = useDispatch()
 
+      const [access, setAccess] = useState({
+        delete: false,
+        edit: false,
+      })
+
+      const checkAccess = () => {
+        let { role } = localStorage.getItem('auth')
+          ? JSON.parse(localStorage.getItem('auth'))
+          : {}
+        const access = { delete: false, edit: false }
+        Object.keys(accessEvents).forEach(function (key) {
+          if (accessEvents[key].indexOf(role) >= 0) {
+            access[key] = true
+          }
+        })
+        setAccess(access)
+      }
+
+      useEffect(() => {
+        checkAccess()
+      }, [])
+
       const handleDelete = async () => {
         const result = await Swal.fire({
           title: `Are you sure to delete ${event.title}?`,
@@ -237,22 +261,26 @@ export const columns = [
 
       return (
         <div className='flex items-center'>
-          <EditPage eventId={event._id} />
-          <SButtonComponent
-            onClick={handleStatusUpdate}
-            size='sm'
-            className='mx-1 bg-green-500 hover:bg-green-600'
-          >
-            <NotebookPen className='h-5 w-5' />
-          </SButtonComponent>
-          <SButtonComponent
-            onClick={handleDelete}
-            size='sm'
-            className='mx-1'
-            variant='destructive'
-          >
-            <Trash2 className='h-5 w-5' />
-          </SButtonComponent>
+          {access.edit && <EditPage eventId={event._id} />}
+          {access.edit && (
+            <SButtonComponent
+              onClick={handleStatusUpdate}
+              size='sm'
+              className='mx-1 bg-green-500 hover:bg-green-600'
+            >
+              <NotebookPen className='h-5 w-5' />
+            </SButtonComponent>
+          )}
+          {access.delete && (
+            <SButtonComponent
+              onClick={handleDelete}
+              size='sm'
+              className='mx-1'
+              variant='destructive'
+            >
+              <Trash2 className='h-5 w-5' />
+            </SButtonComponent>
+          )}
           {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' size='sm' className='mx-1'>

@@ -1,9 +1,10 @@
-// import {
-//   combineReducers,
-//   legacy_createStore as createStore,
-//   applyMiddleware,
-//   compose,
-// } from 'redux'
+import {
+  combineReducers,
+  legacy_createStore as createStore,
+  applyMiddleware,
+  compose,
+} from 'redux'
+// import { configureStore } from '@reduxjs/toolkit'
 
 import { thunk } from 'redux-thunk'
 import authReducer from './auth/reducer'
@@ -17,47 +18,46 @@ import eventsReducer from './events/reducer'
 import listsReducer from './lists/reducer'
 import organizersReducer from './organizers/reducer'
 import ordersReducer from './orders/reducer'
-import { configureStore } from '@reduxjs/toolkit'
 
-// const composerEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const composerEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // ? createStore() redux
-// const rootReducers = combineReducers({
-//   auth: authReducer,
-//   categories: categoriesReducer,
-//   category: categoryReducer,
-//   talents: talentsReducer,
-//   talent: talentReducer,
-//   payments: paymentsReducer,
-//   payment: paymentReducer,
-//   events: eventsReducer,
-//   lists: listsReducer,
-//   organizers: organizersReducer,
-//   orders: ordersReducer,
-// })
+const rootReducers = combineReducers({
+  auth: authReducer,
+  categories: categoriesReducer,
+  category: categoryReducer,
+  talents: talentsReducer,
+  talent: talentReducer,
+  payments: paymentsReducer,
+  payment: paymentReducer,
+  events: eventsReducer,
+  lists: listsReducer,
+  organizers: organizersReducer,
+  orders: ordersReducer,
+})
 
-// const store = createStore(
-//   rootReducers,
-//   composerEnhancer(applyMiddleware(thunk)),
-// )
+const store = createStore(
+  rootReducers,
+  composerEnhancer(applyMiddleware(thunk)),
+)
 
 // ? configureStore() @reduxjs/toolkit
-const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    categories: categoriesReducer,
-    category: categoryReducer,
-    talents: talentsReducer,
-    talent: talentReducer,
-    payments: paymentsReducer,
-    payment: paymentReducer,
-    events: eventsReducer,
-    lists: listsReducer,
-    organizers: organizersReducer,
-    orders: ordersReducer,
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
-  devTools: true,
-})
+// const store = configureStore({
+//   reducer: {
+//     auth: authReducer,
+//     categories: categoriesReducer,
+//     category: categoryReducer,
+//     talents: talentsReducer,
+//     talent: talentReducer,
+//     payments: paymentsReducer,
+//     payment: paymentReducer,
+//     events: eventsReducer,
+//     lists: listsReducer,
+//     organizers: organizersReducer,
+//     orders: ordersReducer,
+//   },
+//   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+//   devTools: true,
+// })
 
 export default store
